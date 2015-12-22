@@ -1,0 +1,169 @@
+#define true 1
+#define false 0
+static wallh = 100, rang = 0, px = 0, py = -2, pang = 90;
+struct { x1; y1; x2; y2; m; } wall_s;
+struct { x; y; ang; } player_s;
+struct { x; y; ang; m; } ray_s;
+
+() {
+
+   //moveto( xres - 100, 20 );
+
+   static wall_s wall1;
+   static player_s player;
+   //static ray_s ray;
+   
+   player.x   =   px;
+   player.y   =   py;
+   player.ang = pang;
+   //ray.ang    = rang;
+   
+   while ( 1 ) {
+   
+      for ( x = 0; x < xres; x++ ) {
+   
+         ray_s ray;
+         
+         x_x = x / xres - 0.5;
+         
+         ray.x   = player.x;
+         ray.y   = player.y;
+         ray.ang = atan( x_x / 0.8 );
+
+         //player.ang = pang;
+      
+   
+         //*********************************************************
+         //* From top-down perspective:                            *
+         //*                                                       *
+         //* Player sitting on xy-axis origin with                 *
+         //* 90 degree raycast angle, wall1 will appear            *
+         //* skewed with the left side (-2,4) looking smaller than *
+         //* the right side (2,2).                                 *
+         //*********************************************************
+   
+         wall1.x1 = -2;
+         wall1.y1 =  4;
+         wall1.x2 =  2;
+         wall1.y2 =  2;
+      
+         //*********************************************************
+         //* Step 1:                                               *
+         //*                                                       *
+         //* Calculate the slope of the wall based on its starting *
+         //* and end points.                                       *
+         //*********************************************************
+   
+         wall1.m = ( wall1.y2 - wall1.y1 ) / ( wall1.x2 - wall1.x1 );
+      
+         //*********************************************************
+         //* Step 2:                                               *
+         //*                                                       *
+         //* Calculate the slope of the raycast by taking the      *
+         //* tangent of the ray's angle.                           *
+         //*********************************************************
+      
+         ray.m = tan( ray.ang );
+      
+         //*********************************************************
+         //* Step 3:                                               *
+         //*                                                       *
+         //* Calculate the intersection between the wall and the   *
+         //* ray.                                                  *
+         //*                                                       *
+         //* i.e.                                                  *
+         //* (wall) y = m1 * x + b1                                *
+         //* (ray)  y = m2 * x + b2                                *
+         //*                                                       *
+         //* So...                                                 *
+         //* m1 * x + b1 = m2 * x + b2                             *
+         //*********************************************************
+   
+         // Note for later:
+         // 
+         // May make separate function to calculate ray-wall intersection.
+   
+         b1 = ( player.x - wall1.x1 ) * wall1.m + ( player.y - wall1.y1 );
+         xs = b1 / ( ray.m - wall1.m );
+         ys = wall1.y1 + ( xs - wall1.x1 ) * wall1.m;
+      
+         //*********************************************************
+         //* Step 4:                                               *
+         //*                                                       *
+         //* Calculate the x and y differences between the player  *
+         //* coordinates, and the ray-wall point of intersection.  *
+         //*********************************************************
+
+         xd = ( player.x - xs );
+         yd = ( player.y - ys );
+      
+         //*********************************************************
+         //* Step 5:                                               *
+         //*                                                       *
+         //* Calculate the intersection's distance to the player.  *
+         //*                                                       *
+         //* i.e.                                                  *
+         //* distance = xd / cos( ray_angle )                      *
+         //* or...                                                 *
+         //* distance = yd / sin( ray_angle )                      *
+         //*********************************************************
+      
+         dist = 0;
+         if ( abs( xd ) > abs( yd ) ) { dist = xd / cos( ray.ang ); }
+         else { dist = yd / sin( ray.ang ); }
+      
+         //*********************************************************
+         //* Step 6:                                               *
+         //*                                                       *
+         //* We have been using trigonometric functions to calc-   *
+         //* ulate distance. The aforementioned functions operate  *
+         //* within the Polar Coordinates plane, so we need to     *
+         //* interpolate those values to the Cartesian plane.      *
+         //*********************************************************
+      
+         c_cos = cos( player.ang - ray.ang );
+         dist *= c_cos;
+      
+         //*********************************************************
+         //* Step 7:                                               *
+         //*                                                       *
+         //* Calculate the height of a wall slice. Remember, each  *
+         //* raycast accounts for a vertical strip of pixels in    *
+         //* the viewport, so each raycast is directly related to  *
+         //* a wall slice.                                         *
+         //*********************************************************
+      
+         if ( dist == 0 ) dist = 1; // Prevent division by zero
+         h = wallh / dist; // 100 is arbitrary
+      
+         ds = -h / 2 + yres / 2; if ( ds < 0 )     ds = 0;
+         de =  h / 2 + yres / 2; if ( de >= yres ) de = yres - 1;
+         
+         setcol( 0xffffff );
+         moveto( x, ds );
+         lineto( x, de );
+         refresh();
+         //cls( 0 );
+         //sleep( 100 );
+         
+         // Draw top-down perspective for debug purposes:
+         //cls( 0 );
+         setcol( 0xff0000 );
+         
+         f = yres / 2;
+         moveto( xres / 2 - f, yres / 2 - f );
+         lineto( xres / 2 , yres / 2 );
+         lineto( xres / 2 + f , yres / 2 - f );
+         
+         setcol( 0x00ff00 );
+         moveto( xres / 2 + wall1.x1 * 50, yres / 2 - wall1.y1 * 50 );
+         lineto( xres / 2 + wall1.x2 * 50, yres / 2 - wall1.y2 * 50 );
+      
+      }
+   
+   //refresh();
+   cls( 0 );
+   
+   }
+
+}

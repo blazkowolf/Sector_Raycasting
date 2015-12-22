@@ -1,0 +1,98 @@
+#define true 1
+#define false 0
+#define radius 5
+#define SCALE 5
+struct { x1, y1, x2, y2 }              wall_s;
+struct { x, y, dx, dy, r, len, ang } player_s;
+
+
+() {
+
+   static wall_s         wall;
+   wall.x1    =            70;
+   wall.y1    =            20;
+   wall.x2    =            70;
+   wall.y2    =            70;
+
+   static player_s     player; //                  Player
+   player.x   =        xres/2; //              Starting x
+   player.y   =        yres/2; //              Starting y
+   player.r   =        radius; //           Player radius
+   player.len =             0; // Length of player vector
+   player.ang =             0; //      Starting direction
+
+   while ( true ) {
+   
+      cls( 0 );
+      drawmap( wall );
+      moveplayer( player ); // Rotate map around the player
+      drawplayer( player );
+      sleep( 1 );
+      refresh();
+
+   }
+
+}
+
+drawmap( wall_s wall ) {
+
+   setcol( 0xffff00 );
+   moveto( wall.x1*SCALE, wall.y1*SCALE );
+   lineto( wall.x2*SCALE, wall.y2*SCALE );
+
+}
+
+drawplayer( player_s player ) {
+
+   setcol( 0x00ff00 );
+   drawsph( player.x, player.y, -player.r );
+   setcol( 0xff0000 );
+   moveto( player.x, player.y );
+   lineto( player.x + cos( player.ang ) * 15, 
+           player.y + sin( player.ang ) * 15 );
+    
+}
+
+moveplayer( player_s player ) {
+
+   if ( keystatus[0x11] ) { // 'w' (Move forward)
+      player.x += cos( player.ang );
+      player.y += sin( player.ang );
+   }
+   if ( keystatus[0x1f] ) { // 's' (Move backward)
+      player.x -= cos( player.ang );
+      player.y -= sin( player.ang );
+   }
+   if ( keystatus[0xcd] ) { // Right-arrow key (Turn right)
+      player.ang += 0.025;
+   }
+   if ( keystatus[0xcb] ) { // Left-arrow key (Turn left)
+      player.ang -= 0.025;
+   }
+   if ( keystatus[0x1e] ) { // 'a' (Strafe right)
+      player.x += sin( player.ang );
+      player.y -= cos( player.ang );
+   }
+   if ( keystatus[0x20] ) { // 'd' (Strafe left)
+      player.x -= sin( player.ang );
+      player.y += cos( player.ang );
+   }
+   
+   //player.dx = player.len * cos( player.ang );
+   //player.dy = player.len * sin( player.ang );
+   
+   //player.x += player.dx;
+   //player.y += player.dy;
+   
+   // =================== Check Collisions =====================
+   
+   // With window bounds
+   if ( player.x - player.r < 0 )    player.x = player.r;
+   if ( player.x + player.r > xres ) player.x = xres - player.r;
+   if ( player.y - player.r < 0 )    player.y = player.r;
+   if ( player.y + player.r > yres ) player.y = yres - player.r;
+   
+   // With wall location
+   
+
+}
