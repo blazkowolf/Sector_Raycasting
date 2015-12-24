@@ -1,0 +1,114 @@
+#define true 1
+#define false 0
+#define radius 5
+#define SCALE 10
+#define MOVSPEED 3
+struct { x1, y1, x2, y2, tx1, ty1, tz1, tx2, ty2, tz2 } wall_s;
+struct { ang, wall_s wall } world_s;
+struct { x, y, r, ang } player_s;
+
+
+() {
+
+   static world_s       world;
+   world.ang     =          0;
+   world.wall.x1 =   70*SCALE;
+   world.wall.y1 =   20*SCALE;
+   world.wall.x2 =   70*SCALE;
+   world.wall.y2 =   70*SCALE;
+   
+
+   static player_s     player; //                  Player
+   player.x   =        xres/2; //              Starting x
+   player.y   =        yres/2; //              Starting y
+   player.r   =        radius; //           Player radius
+   player.ang =             0;
+   
+   while ( true ) {
+   
+      cls( 0 );
+      drawmap( world, player );
+      moveplayer( world );
+      drawplayer( player );
+      sleep( 1 );
+      refresh();
+
+   }
+
+}
+
+drawmap( world_s world, player_s player ) {
+
+   // Transform the wall vertices based upon the
+   // player's position.
+   world.wall.tx1 = world.wall.x1 - player.x;
+   world.wall.tx2 = world.wall.x2 - player.x;
+   world.wall.ty1 = world.wall.y1 - player.y;
+   world.wall.ty2 = world.wall.y2 - player.y;
+   
+   world.wall.tz1 = 
+      world.wall.tx1 * cos( world.ang ) + 
+      world.wall.ty1 * sin( world.ang );
+   world.wall.tz2 = 
+      world.wall.tx2 * cos( world.ang ) + 
+      world.wall.ty2 * sin( world.ang );
+   world.wall.tx1 = 
+      world.wall.tx1 * sin( world.ang ) - 
+      world.wall.ty1 * cos( world.ang );
+   world.wall.tx2 = 
+      world.wall.tx2 * sin( world.ang ) - 
+      world.wall.ty2 * cos( world.ang );
+
+   setcol( 0xffff00 );
+   moveto( player.x - world.wall.tx1, player.y - world.wall.tz1 );
+   lineto( player.x - world.wall.tx2, player.y - world.wall.tz2 );
+
+}
+
+drawplayer( player_s player ) {
+
+   setcol( 0x00ff00 );
+   drawsph( player.x, player.y, -player.r );
+   setcol( 0xff0000 );
+   moveto( player.x, player.y );
+   lineto( player.x, player.y - SCALE );
+    
+}
+
+moveplayer( world_s world ) {
+
+   if ( keystatus[0x11] ) { // 'w' (Move forward)
+      world.wall.x1 -= cos( world.ang ) * MOVSPEED;
+      world.wall.x2 -= cos( world.ang ) * MOVSPEED;
+      world.wall.y1 -= sin( world.ang ) * MOVSPEED;
+      world.wall.y2 -= sin( world.ang ) * MOVSPEED;
+   }
+   if ( keystatus[0x1f] ) { // 's' (Move backward)
+      world.wall.x1 += cos( world.ang ) * MOVSPEED;
+      world.wall.x2 += cos( world.ang ) * MOVSPEED;
+      world.wall.y1 += sin( world.ang ) * MOVSPEED;
+      world.wall.y2 += sin( world.ang ) * MOVSPEED;
+   }
+   if ( keystatus[0xcd] ) { // Right-arrow key (Turn right)
+      world.ang += 0.025;
+   }
+   if ( keystatus[0xcb] ) { // Left-arrow key (Turn left)
+      world.ang -= 0.025;
+   }
+   if ( keystatus[0x1e] ) { // 'a' (Strafe right)
+      world.wall.x1 += sin( world.ang ) * MOVSPEED;
+      world.wall.x2 += sin( world.ang ) * MOVSPEED;
+      world.wall.y1 -= cos( world.ang ) * MOVSPEED;
+      world.wall.y2 -= cos( world.ang ) * MOVSPEED;
+   }
+   if ( keystatus[0x20] ) { // 'd' (Strafe left)
+      world.wall.x1 -= sin( world.ang ) * MOVSPEED;
+      world.wall.x2 -= sin( world.ang ) * MOVSPEED;
+      world.wall.y1 += cos( world.ang ) * MOVSPEED;
+      world.wall.y2 += cos( world.ang ) * MOVSPEED;
+   }
+   
+   // ==================== Check Collisions ======================
+   // No collision detection, yet.
+   
+}
