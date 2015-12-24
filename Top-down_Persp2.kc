@@ -96,16 +96,16 @@ moveplayer( world_s world ) {
       world.ang -= 0.025;
    }
    if ( keystatus[0x1e] ) { // 'a' (Strafe right)
-      world.wall.x1 += sin( world.ang ) * MOVSPEED;
-      world.wall.x2 += sin( world.ang ) * MOVSPEED;
-      world.wall.y1 -= cos( world.ang ) * MOVSPEED;
-      world.wall.y2 -= cos( world.ang ) * MOVSPEED;
-   }
-   if ( keystatus[0x20] ) { // 'd' (Strafe left)
       world.wall.x1 -= sin( world.ang ) * MOVSPEED;
       world.wall.x2 -= sin( world.ang ) * MOVSPEED;
       world.wall.y1 += cos( world.ang ) * MOVSPEED;
       world.wall.y2 += cos( world.ang ) * MOVSPEED;
+   }
+   if ( keystatus[0x20] ) { // 'd' (Strafe left)
+      world.wall.x1 += sin( world.ang ) * MOVSPEED;
+      world.wall.x2 += sin( world.ang ) * MOVSPEED;
+      world.wall.y1 -= cos( world.ang ) * MOVSPEED;
+      world.wall.y2 -= cos( world.ang ) * MOVSPEED;
    }
    
    // ==================== Check Collisions ======================
