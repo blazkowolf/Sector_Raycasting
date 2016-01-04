@@ -1,0 +1,13 @@
+#define true 1
+#define false 0
+
+struct { x, y, z } player_s;
+
+() {
+
+   while ( true ) {
+      cls( 0 );
+      refresh();
+   }
+
+}
