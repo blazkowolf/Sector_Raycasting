@@ -2,12 +2,38 @@
 #define false 0
 
 struct { x, y, z } player_s;
+struct { x, y, z } vertex_s;
 
 () {
 
+   vertex_s vertex;
+   initvertex( vertex, 3, 4, 5 );
+   static vertex_s vertices[10];
+
    while ( true ) {
+   
+      time = klock();
+   
       cls( 0 );
+      
+      setcol( 0xff0000 );
+      moveto( xres/2, yres/2 );
+      printnum( vertex.x );
+      moveto( xres/2, yres/2 + 20 );
+      printnum( vertex.y );
+      moveto( xres/2, yres/2 + 40 );
+      printnum( vertex.z );
+
       refresh();
+      
    }
+
+}
+
+initvertex( vertex_s vert, x, y, z ) {
+
+   vert.x = x;
+   vert.y = y;
+   vert.z = z;
 
 }
