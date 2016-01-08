@@ -60,10 +60,28 @@ drawdebuglines( wall_s wall, player_s player ) {
    moveto( 20, wall.y1 ); lineto( 20, wall.y2 ); // Wall height
    moveto( wall.x1, yres - 20 ); lineto( wall.x2, yres - 20 ); // Wall width
    
+   // Draw triangle from wall
+   setcol( 0x02aefa );
+   moveto( wall.x1, wall.y1 ); lineto( wall.x1, wall.y2 ); lineto( wall.x2, wall.y2 );
+   
+   // Find wall slope
+   m = ( wall.y2 - wall.y1 ) / ( wall.x2 - wall.x1 );
+   perp_m = 1 / m;
+   x = ( wall.x2 - wall.x1 ) / 6;
+   y = ( wall.y2 - wall.y1 ) / 6;
+   
+   setcol( 0xf4a460 );
+   moveto( wall.x1 - x, wall.y1 - y );
+   lineto( wall.x1 - x - y, wall.y1 - y + x );
+   
    // Draw player lines second
    setcol( 0x0000ff );
    moveto( 20, player.y - radius ); lineto( 20, player.y + radius ); // Player height
    moveto( player.x - radius, yres - 20 ); lineto( player.x + radius, yres - 20 ); // Player width
+   
+   //setcol( 0xf4a460 );
+   //moveto( wall.x1, wall.y1 ); lineto( player.x, player.y );
+   //moveto( wall.x2, wall.y2 ); lineto( player.x, player.y );
 
 }
 
@@ -112,21 +130,21 @@ moveplayer( player_s player, wall_s wall ) {
    // and then loop through all the possible walls the player could
    // collide with whilst checking if the player's coordinates have
    // exceeded the bounds of said walls.
-   if ( player.y > wall.y1 && player.y < wall.y2 ) {
+   //if ( player.y > wall.y1 && player.y < wall.y2 ) {
    
       // What side of the wall is the player on
-      if ( player.x < wall.x1 ) { // Right side
+   //   if ( player.x < wall.x1 ) { // Right side
          
-         if ( player.x + player.r > wall.x1 )
-            player.x = wall.x1 - player.r;
+   //      if ( player.x + player.r > wall.x1 )
+   //         player.x = wall.x1 - player.r;
 
-      } else if ( player.x > wall.x1 ) { // Left side
+   //   } else if ( player.x > wall.x1 ) { // Left side
       
-         if ( player.x - player.r < wall.x1 )
-            player.x = wall.x1 + player.r;
+   //      if ( player.x - player.r < wall.x1 )
+   //         player.x = wall.x1 + player.r;
       
-      }
+   //   }
 
-   }
+   //}
    
 }
