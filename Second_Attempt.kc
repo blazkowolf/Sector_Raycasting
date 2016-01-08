@@ -4,9 +4,10 @@
 struct { x, y, z } player_s;
 struct { x, y, z } vertex_s;
 
+static vertex_s vertex;
+
 () {
 
-   vertex_s vertex;
    initvertex( vertex, 3, 4, 5 );
    static vertex_s vertices[10];
 
