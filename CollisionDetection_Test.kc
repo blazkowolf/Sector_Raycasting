@@ -1,6 +1,6 @@
 #define true 1
 #define false 0
-#define radius 5
+#define radius 20
 #define SCALE 10
 struct { x1, y1, x2, y2 } wall_s;
 struct { x, y, r, ang } player_s;
@@ -9,7 +9,7 @@ struct { x, y, r, ang } player_s;
 () {
 
    static wall_s         wall;
-   wall.x1    =      70*SCALE;
+   wall.x1    =      50*SCALE;
    wall.y1    =      20*SCALE;
    wall.x2    =      70*SCALE;
    wall.y2    =      70*SCALE;
@@ -23,6 +23,7 @@ struct { x, y, r, ang } player_s;
    while ( true ) {
    
       cls( 0 );
+      drawdebuglines( wall, player );
       drawmap( wall );
       moveplayer( player, wall );
       drawplayer( player );
@@ -50,6 +51,20 @@ drawplayer( player_s player ) {
    lineto( player.x + cos( player.ang ) * 15, 
            player.y + sin( player.ang ) * 15 );
     
+}
+
+drawdebuglines( wall_s wall, player_s player ) {
+
+   // Draw wall lines first
+   setcol( 0xf4a460 ); // Sandy-brown
+   moveto( 20, wall.y1 ); lineto( 20, wall.y2 ); // Wall height
+   moveto( wall.x1, yres - 20 ); lineto( wall.x2, yres - 20 ); // Wall width
+   
+   // Draw player lines second
+   setcol( 0x0000ff );
+   moveto( 20, player.y - radius ); lineto( 20, player.y + radius ); // Player height
+   moveto( player.x - radius, yres - 20 ); lineto( player.x + radius, yres - 20 ); // Player width
+
 }
 
 moveplayer( player_s player, wall_s wall ) {
