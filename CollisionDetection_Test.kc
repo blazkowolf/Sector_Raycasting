@@ -70,14 +70,23 @@ drawdebuglines( wall_s wall, player_s player ) {
    x = ( wall.x2 - wall.x1 ) / 6;
    y = ( wall.y2 - wall.y1 ) / 6;
    
+   setcol( 0x0000ff );
+   moveto( player.x - player.r, player.y );
+   lineto( player.x - x - player.r - y, y + x );
+   moveto( player.x + player.r, player.y );
+   lineto( player.x - x + player.r - y, y + x );
+   
+   moveto( player.x - x - player.r - y, y + x );
+   lineto( player.x - x - player.r, y );
+   
    setcol( 0xf4a460 );
    moveto( wall.x1 - x, wall.y1 - y );
    lineto( wall.x1 - x - y, wall.y1 - y + x );
    
    // Draw player lines second
    setcol( 0x0000ff );
-   moveto( 20, player.y - radius ); lineto( 20, player.y + radius ); // Player height
-   moveto( player.x - radius, yres - 20 ); lineto( player.x + radius, yres - 20 ); // Player width
+   moveto( 20, player.y - player.r ); lineto( 20, player.y + player.r ); // Player height
+   moveto( player.x - player.r, yres - 20 ); lineto( player.x + player.r, yres - 20 ); // Player width
    
    //setcol( 0xf4a460 );
    //moveto( wall.x1, wall.y1 ); lineto( player.x, player.y );
